@@ -11,7 +11,11 @@ func (a *App) telegramBotActions() {
 	})
 
 	a.Bot.Handle("/find_card_by_id", func(m *tb.Message) {
-		controller.GetCardInfo(m, a.Bot)
+		controller.GetCardInfoById(m, a.Bot)
+	})
+
+	a.Bot.Handle("/find_card_by_name", func(m *tb.Message) {
+		controller.GetCardInfoByName(m, a.Bot)
 	})
 
 	a.Bot.Start()

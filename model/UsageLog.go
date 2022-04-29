@@ -8,6 +8,8 @@ import (
 
 type UsageLog struct {
 	ID        primitive.ObjectID `json:"id,omitempty" bson:"_id"`
+	FirstName string             `json:"first_name" bson:"first_name"`
+	LastName  string             `json:"last_name" bson:"last_name"`
 	User      string             `json:"user" bson:"user"`
 	Action    string             `json:"action" bson:"action"`
 	Payload   string             `json:"payload" bson:"payload"`
