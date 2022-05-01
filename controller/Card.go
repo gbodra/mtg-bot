@@ -16,6 +16,9 @@ import (
 	tb "gopkg.in/tucnak/telebot.v2"
 )
 
+// TODO: refatorar a inclusao do log de uso
+// TODO: refatorar a busca por precos do card para pegar o ultimo preco salvo no mongo
+
 func HelloWorld(m *tb.Message, bot *tb.Bot) {
 	bot.Send(m.Sender, "Hello I'm Miyagi your friend who will keep you up to date with your MTG card prices")
 

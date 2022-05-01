@@ -14,6 +14,9 @@ import (
 	tb "gopkg.in/tucnak/telebot.v2"
 )
 
+// TODO: criar logica para buscar precos que tiveram grande mudanca
+// TODO: refatorar a inclusao do log de uso
+
 func AlertOptin(m *tb.Message, bot *tb.Bot) {
 	_, err := http.Post(os.Getenv("API_URI")+"/alert?chat_id="+strconv.FormatInt(m.Chat.ID, 10), "", nil)
 
