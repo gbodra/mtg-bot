@@ -9,29 +9,17 @@ import (
 	"net/url"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/gbodra/mtg-bot/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	tb "gopkg.in/tucnak/telebot.v2"
 )
 
-// TODO: refatorar a inclusao do log de uso
 // TODO: refatorar a busca por precos do card para pegar o ultimo preco salvo no mongo
 
 func HelloWorld(m *tb.Message, bot *tb.Bot) {
 	bot.Send(m.Sender, "Hello I'm Miyagi your friend who will keep you up to date with your MTG card prices")
 
-	usageLog := model.UsageLog{
-		ID:        primitive.NewObjectID(),
-		User:      m.Sender.Username,
-		FirstName: m.Sender.FirstName,
-		LastName:  m.Sender.LastName,
-		Action:    "/hello",
-		Timestamp: time.Now(),
-		Payload:   m.Payload,
-	}
-	SaveUsageLog(usageLog)
+	SaveUsageLog(m)
 }
 
 func GetCardInfoById(m *tb.Message, bot *tb.Bot) {
@@ -74,16 +62,7 @@ func GetCardInfoById(m *tb.Message, bot *tb.Bot) {
 
 	bot.Send(m.Sender, message)
 
-	usageLog := model.UsageLog{
-		ID:        primitive.NewObjectID(),
-		User:      m.Sender.Username,
-		FirstName: m.Sender.FirstName,
-		LastName:  m.Sender.LastName,
-		Action:    "/find_card_by_id",
-		Timestamp: time.Now(),
-		Payload:   m.Payload,
-	}
-	SaveUsageLog(usageLog)
+	SaveUsageLog(m)
 }
 
 func GetCardInfoByName(m *tb.Message, bot *tb.Bot) {
@@ -126,14 +105,5 @@ func GetCardInfoByName(m *tb.Message, bot *tb.Bot) {
 
 	bot.Send(m.Sender, message)
 
-	usageLog := model.UsageLog{
-		ID:        primitive.NewObjectID(),
-		User:      m.Sender.Username,
-		FirstName: m.Sender.FirstName,
-		LastName:  m.Sender.LastName,
-		Action:    "/find_card_by_name",
-		Timestamp: time.Now(),
-		Payload:   m.Payload,
-	}
-	SaveUsageLog(usageLog)
+	SaveUsageLog(m)
 }

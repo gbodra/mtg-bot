@@ -10,6 +10,11 @@ import (
 )
 
 func (a *App) telegramBotActions() {
+	a.Bot.Handle(tb.OnText, func(m *tb.Message) {
+		controller.SaveUsageLog(m)
+		a.Bot.Send(m.Sender, "Sorry your request was invalid. Please check the menu to see what are the available actions")
+	})
+
 	a.Bot.Handle("/hello", func(m *tb.Message) {
 		controller.HelloWorld(m, a.Bot)
 	})

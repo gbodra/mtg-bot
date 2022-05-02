@@ -7,15 +7,12 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/gbodra/mtg-bot/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	tb "gopkg.in/tucnak/telebot.v2"
 )
 
 // TODO: criar logica para buscar precos que tiveram grande mudanca
-// TODO: refatorar a inclusao do log de uso
 
 func AlertOptin(m *tb.Message, bot *tb.Bot) {
 	_, err := http.Post(os.Getenv("API_URI")+"/alert?chat_id="+strconv.FormatInt(m.Chat.ID, 10), "", nil)
@@ -27,16 +24,7 @@ func AlertOptin(m *tb.Message, bot *tb.Bot) {
 		bot.Send(m.Sender, "Alert saved successfully!")
 	}
 
-	usageLog := model.UsageLog{
-		ID:        primitive.NewObjectID(),
-		User:      m.Sender.Username,
-		FirstName: m.Sender.FirstName,
-		LastName:  m.Sender.LastName,
-		Action:    "/alert_optin",
-		Timestamp: time.Now(),
-		Payload:   m.Payload,
-	}
-	SaveUsageLog(usageLog)
+	SaveUsageLog(m)
 }
 
 func AlertOptout(m *tb.Message, bot *tb.Bot) {
@@ -61,16 +49,7 @@ func AlertOptout(m *tb.Message, bot *tb.Bot) {
 
 	defer resp.Body.Close()
 
-	usageLog := model.UsageLog{
-		ID:        primitive.NewObjectID(),
-		User:      m.Sender.Username,
-		FirstName: m.Sender.FirstName,
-		LastName:  m.Sender.LastName,
-		Action:    "/alert_optout",
-		Timestamp: time.Now(),
-		Payload:   m.Payload,
-	}
-	SaveUsageLog(usageLog)
+	SaveUsageLog(m)
 }
 
 func getAlerts(chatId string) string {
