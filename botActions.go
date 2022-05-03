@@ -35,11 +35,8 @@ func (a *App) telegramBotActions() {
 	})
 
 	scheduler := gocron.NewScheduler(time.Local)
-	scheduler.Every("30s").Do(func() {
-		// scheduler.Every(1).Day().At("10:22").Do(func() {
+	scheduler.Every(1).Day().At("08:00").Do(func() {
 		controller.SendNotification(a.Bot)
-		// recipient, _ := a.Bot.ChatByID("605145454")
-		// a.Bot.Send(recipient, "Test cron")
 	})
 	scheduler.StartAsync()
 
