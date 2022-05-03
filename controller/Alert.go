@@ -10,16 +10,15 @@ import (
 	"strconv"
 
 	"github.com/gbodra/mtg-bot/model"
+	"github.com/gbodra/mtg-bot/utils"
 	tb "gopkg.in/tucnak/telebot.v2"
 )
-
-// TODO: criar logica para buscar precos que tiveram grande mudanca
 
 func AlertOptin(m *tb.Message, bot *tb.Bot) {
 	_, err := http.Post(os.Getenv("API_URI")+"/alert?chat_id="+strconv.FormatInt(m.Chat.ID, 10), "", nil)
 
 	if err != nil {
-		log.Println(err)
+		utils.HandleError(err, "Error on saving the optin")
 		bot.Send(m.Sender, "Error saving your alert")
 	} else {
 		bot.Send(m.Sender, "Alert saved successfully!")
@@ -35,14 +34,11 @@ func AlertOptout(m *tb.Message, bot *tb.Bot) {
 
 	url := os.Getenv("API_URI") + "/alert/" + alertId
 	request, err := http.NewRequest("DELETE", url, nil)
-
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error creating the DELETE request on AlertOptout")
 
 	resp, err := client.Do(request)
 	if err != nil {
-		log.Println(err)
+		utils.HandleError(err, "Error executing the DELETE request on AlertOptout")
 		bot.Send(m.Sender, "Error deleting your alert")
 	} else {
 		bot.Send(m.Sender, "You no longer will receive price alerts")
@@ -55,15 +51,10 @@ func AlertOptout(m *tb.Message, bot *tb.Bot) {
 
 func getAlert(chatId string) string {
 	response, err := http.Get(os.Getenv("API_URI") + "/alert/" + chatId)
-
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error getting the alert from the API on getAlert")
 
 	responseData, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error reading the response on getAlert")
 
 	var alertObject model.Alert
 	json.Unmarshal(responseData, &alertObject)
@@ -73,14 +64,10 @@ func getAlert(chatId string) string {
 
 func getAlerts() []model.Alert {
 	response, err := http.Get(os.Getenv("API_URI") + "/listAlerts")
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error getting the alert from the API on getAlerts")
 
 	responseData, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error reading the response on getAlerts")
 
 	var alertObject []model.Alert
 	json.Unmarshal(responseData, &alertObject)
@@ -90,14 +77,10 @@ func getAlerts() []model.Alert {
 
 func getAlertMessage() model.AlertMessage {
 	response, err := http.Get(os.Getenv("API_URI") + "/price/top")
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error getting the alert from the API on getAlertMessage")
 
 	responseData, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error reading the response on getAlertMessage")
 
 	var alertMessageObject model.AlertMessage
 	json.Unmarshal(responseData, &alertMessageObject)
@@ -120,7 +103,8 @@ func SendNotification(bot *tb.Bot) {
 	log.Println("Alerta deveria ser enviado")
 
 	for _, el := range listOfRecipients {
-		recipient, _ := bot.ChatByID(strconv.FormatInt(el.ChatID, 10))
+		recipient, err := bot.ChatByID(strconv.FormatInt(el.ChatID, 10))
+		utils.HandleError(err, "Error getting the chatId")
 		bot.Send(recipient, messageStr)
 	}
 }

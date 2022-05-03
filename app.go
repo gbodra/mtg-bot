@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gbodra/mtg-bot/controller"
+	"github.com/gbodra/mtg-bot/utils"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -21,17 +22,11 @@ type App struct {
 
 func (a *App) Initialize() {
 	err := godotenv.Load()
-
-	if err != nil {
-		log.Println("Error loading .env")
-	}
+	utils.HandleError(err, "Error loading .env file")
 
 	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
 	a.Mongo, err = mongo.Connect(context.TODO(), clientOptions)
-
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(err, "Error connecting to Mongo")
 
 	a.injectClients()
 	a.initializeTelegramBot()
@@ -53,9 +48,7 @@ func (a *App) initializeTelegramBot() {
 		Poller: &tb.LongPoller{Timeout: 10 * time.Second},
 	})
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	utils.HandleError(err, "Error initializing Telegram Bot")
 
 	a.Bot = b
 }
