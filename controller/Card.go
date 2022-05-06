@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/gbodra/mtg-bot/model"
 	"github.com/gbodra/mtg-bot/utils"
@@ -63,6 +64,7 @@ func sendCardInfo(body io.ReadCloser, m *tb.Message, bot *tb.Bot) {
 		message += "   Market Price: " + fmt.Sprintf("%.2f", el.MarketPrice) + "\n"
 		message += "   Buy List Market Price: " + fmt.Sprintf("%.2f", el.BuylistMarketPrice) + "\n"
 		message += "   Listed Median Price: " + fmt.Sprintf("%.2f", el.ListedMedianPrice) + "\n"
+		message += "   Date: " + el.CreatedAt.Format(time.RFC822) + "\n"
 		message += "-----------------------------\n"
 	}
 
